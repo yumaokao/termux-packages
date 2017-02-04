@@ -1,0 +1,61 @@
+diff -u -r ../../Src/builtin.c ./Src/builtin.c
+--- ../../Src/builtin.c	2016-11-26 08:09:58.612103876 +0800
++++ ./Src/builtin.c	2016-11-26 08:12:08.905430935 +0800
+@@ -5021,7 +5021,7 @@
+     optbuf[lenoptbuf - 1] = opch;
+ 
+     /* check for legality */
+-    if(opch == ':' || !(p = memchr(optstr, opch, lenoptstr))) {
++    if(opch == ':' || !(p = memchr(optstr, (unsigned char) opch, lenoptstr))) {
+ 	p = "?";
+     err:
+ 	zsfree(zoptarg);
+diff -u -r ../../Src/Modules/zftp.c ./Src/Modules/zftp.c
+--- ../../Src/Modules/zftp.c	2016-11-26 08:09:58.625437209 +0800
++++ ./Src/Modules/zftp.c	2016-11-26 08:12:08.902097601 +0800
+@@ -1524,7 +1524,7 @@
+ 		    *optr++ = *iptr++;
+ 		}
+ 	    }
+-	    if (fromasc && (iptr = memchr(lsbuf, '\r', n))) {
++	    if (fromasc && (iptr = memchr(lsbuf, (unsigned char) '\r', n))) {
+ 		/* \r\n -> \n */
+ 		char *optr = iptr;
+ 		int cnt = n - (iptr - lsbuf);
+diff -u -r ../../Src/pattern.c ./Src/pattern.c
+--- ../../Src/pattern.c	2016-11-26 08:09:58.632103875 +0800
++++ ./Src/pattern.c	2016-11-26 08:12:08.878764270 +0800
+@@ -786,7 +786,7 @@
+     while (*patparse == zpc_chars[ZPC_BAR] ||
+ 	   (*patparse == zpc_special[ZPC_TILDE] &&
+ 	    (patparse[1] == '/' ||
+-	     !memchr(zpc_special, patparse[1], ZPC_SEG_COUNT)))) {
++	     !memchr(zpc_special, (unsigned char) patparse[1], ZPC_SEG_COUNT)))) {
+ 	int tilde = *patparse++ == zpc_special[ZPC_TILDE];
+ 	long gfnode = 0, newbr;
+ 
+@@ -934,9 +934,9 @@
+     *flagp = P_PURESTR;
+ 
+     starter = chain = 0;
+-    while (!memchr(zpc_special, *patparse, ZPC_SEG_COUNT) ||
++    while (!memchr(zpc_special, (unsigned char) *patparse, ZPC_SEG_COUNT) ||
+ 	   (*patparse == zpc_special[ZPC_TILDE] && patparse[1] != '/' &&
+-	    memchr(zpc_special, patparse[1], ZPC_SEG_COUNT))) {
++	    memchr(zpc_special, (unsigned char) patparse[1], ZPC_SEG_COUNT))) {
+ 	if ((*patparse == zpc_special[ZPC_INPAR] &&
+ 	     patparse[1] == zpc_special[ZPC_HASH]) ||
+ 	    (*patparse == zpc_special[ZPC_KSH_AT] && patparse[1] == Inpar &&
+@@ -1295,10 +1295,10 @@
+ 	     * want to match without parentheses.
+ 	     */
+ 	    if (kshchar ||
+-		(memchr(zpc_special, *patparse, ZPC_NO_KSH_GLOB) &&
++		(memchr(zpc_special, (unsigned char) *patparse, ZPC_NO_KSH_GLOB) &&
+ 		 (*patparse != zpc_special[ZPC_TILDE] ||
+ 		  patparse[1] == '/' ||
+-		  !memchr(zpc_special, patparse[1], ZPC_SEG_COUNT)))) {
++		  !memchr(zpc_special, (unsigned char) patparse[1], ZPC_SEG_COUNT)))) {
+ 		break;
+ 	    }
+     	}
